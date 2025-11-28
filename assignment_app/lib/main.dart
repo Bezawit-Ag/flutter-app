@@ -1,3 +1,4 @@
+// lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'features/home/screens/home_screen.dart';
@@ -23,9 +24,18 @@ class RecipeApp extends StatelessWidget {
       title: 'Recipe Hub',
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color(0xFF1B1B2A),
+        // Primary dark background color for the app's body
+        scaffoldBackgroundColor: const Color(0xFF0A0A0A), 
+        // Orange color for the top header section
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFFFA5524),
+          backgroundColor: Color(0xFFFF9800), // A vibrant orange
+        ),
+        // Set an accent color for selected items in BottomNavBar, etc.
+        colorScheme: ColorScheme.fromSwatch(
+          primarySwatch: Colors.deepOrange, // A swatch for overall theming
+          brightness: Brightness.dark,
+        ).copyWith(
+          secondary: const Color(0xFFFF9800), // Orange for accent elements
         ),
       ),
       home: const MainTabScreen(),
@@ -60,18 +70,20 @@ class _MainTabScreenState extends State<MainTabScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // The Scaffold background will be the dark color from ThemeData
       body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        backgroundColor: const Color(0xFF1B1B2A),
-        selectedItemColor: const Color(0xFFFA5524),
+        // The bottom navigation bar has a slightly different dark shade
+        backgroundColor: const Color(0xFF0A0A0A), 
+        selectedItemColor: const Color(0xFFFF9800), // Orange selected color
         unselectedItemColor: Colors.grey,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favorites'),
-          BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Create'),
+          BottomNavigationBarItem(icon: Icon(Icons.add_circle), label: 'Create'), // Changed add to add_circle for visual
           BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: 'Plan'),
           BottomNavigationBarItem(icon: Icon(Icons.list_alt), label: 'List'),
         ],
