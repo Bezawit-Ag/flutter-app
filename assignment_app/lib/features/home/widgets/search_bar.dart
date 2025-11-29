@@ -7,19 +7,23 @@ class RecipeSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      onChanged: onChanged,
-      decoration: InputDecoration(
-        hintText: "Search recipes or ingredients...",
-        filled: true,
-        fillColor: Colors.white.withAlpha((0.1 * 255).toInt()), 
-        prefixIcon: const Icon(Icons.search, color: Colors.white),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide.none,
+    return Container(
+      height: 48,
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: TextField(
+        onChanged: onChanged,
+        style: const TextStyle(color: Colors.white),
+        decoration: const InputDecoration(
+          prefixIcon: Icon(Icons.search, color: Colors.white),
+          hintText: "Search recipes or ingredients...",
+          hintStyle: TextStyle(color: Colors.white70),
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.only(top: 12),
         ),
       ),
-      style: const TextStyle(color: Colors.white),
     );
   }
 }
