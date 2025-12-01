@@ -26,7 +26,7 @@ class HomeScreen extends StatelessWidget {
                 colors: [Color(0xFFFF6E4E), Color(0xFFFF3E7F)],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-              ),
+              ),//color change 
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
