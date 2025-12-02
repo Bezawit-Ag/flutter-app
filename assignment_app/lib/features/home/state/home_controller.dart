@@ -14,6 +14,14 @@ class HomeController extends ChangeNotifier {
     _loadRecipes();
   }
 
+  List<String> get availableTags {
+    final set = <String>{};
+    for (final recipe in state.allRecipes) {
+      set.addAll(recipe.tags);
+    }
+    return set.toList()..sort();
+  }
+
   void _loadRecipes() {
     final sample = [
       RecipeViewModel(
@@ -24,6 +32,7 @@ class HomeController extends ChangeNotifier {
         difficulty: 'Easy',
         image: 'assets/images/avocado_toast.jpg',
         tags: ['healthy', 'quick', 'protein'],
+        isFavorite: true, 
       ),
       RecipeViewModel(
         title: 'Grilled Chicken Caesar Salad',
@@ -33,6 +42,7 @@ class HomeController extends ChangeNotifier {
         difficulty: 'Medium',
         image: 'assets/images/caesar_salad.jpg',
         tags: ['salad', 'low-carb', 'protein'],
+        isFavorite: false,
       ),
     ];
 
@@ -70,5 +80,22 @@ class HomeController extends ChangeNotifier {
 
     state = state.copyWith(visibleRecipes: filtered);
     notifyListeners();
+  }
+
+  void toggleFavorite(String recipeTitle) {
+    final updatedRecipes = state.allRecipes.map((recipe) {
+      if (recipe.title == recipeTitle) {
+        return recipe.copyWith(isFavorite: !recipe.isFavorite);
+      }
+      return recipe;
+    }).toList();
+
+    state = state.copyWith(allRecipes: updatedRecipes);
+    _filterRecipes(); 
+    notifyListeners();
+  }
+
+  List<RecipeViewModel> get favoriteRecipes {
+    return state.allRecipes.where((recipe) => recipe.isFavorite).toList();
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'features/home/screens/home_screen.dart';
+import 'features/home/screens/favorites_screen.dart';
 import 'features/home/state/home_controller.dart';
 
 void main() {
@@ -11,13 +12,13 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => HomeController()),
       ],
-      child: RecipeApp(), // NO const here
+      child: RecipeApp(), 
     ),
   );
 }
 
 class RecipeApp extends StatelessWidget {
-  RecipeApp({super.key}); // NO const
+  RecipeApp({super.key}); 
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +37,13 @@ class RecipeApp extends StatelessWidget {
           secondary: const Color(0xFFFF9800),
         ),
       ),
-      home: MainTabScreen(), // NO const
+      home: MainTabScreen(), 
     );
   }
 }
 
 class MainTabScreen extends StatefulWidget {
-  MainTabScreen({super.key}); // NO const
+  MainTabScreen({super.key}); 
 
   @override
   State<MainTabScreen> createState() => _MainTabScreenState();
@@ -52,8 +53,8 @@ class _MainTabScreenState extends State<MainTabScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
-    HomeScreen(), // 🔥 NO const
-    const Placeholder(child: Text('Favorites Screen')),
+    HomeScreen(), 
+    FavoritesScreen(), 
     const Placeholder(child: Text('Create Recipe Screen')),
     const Placeholder(child: Text('Meal Planner Screen')),
     const Placeholder(child: Text('Shopping List Screen')),
