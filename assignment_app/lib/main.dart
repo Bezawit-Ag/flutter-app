@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'features/home/screens/home_screen.dart';
 import 'features/home/screens/favorites_screen.dart';
+import 'features/home/screens/meal_planner_screen.dart';
 import 'features/home/state/home_controller.dart';
 
 void main() {
@@ -56,7 +57,7 @@ class _MainTabScreenState extends State<MainTabScreen> {
     HomeScreen(), 
     FavoritesScreen(), 
     const Placeholder(child: Text('Create Recipe Screen')),
-    const Placeholder(child: Text('Meal Planner Screen')),
+    const MealPlannerScreen(),
     const Placeholder(child: Text('Shopping List Screen')),
   ];
 

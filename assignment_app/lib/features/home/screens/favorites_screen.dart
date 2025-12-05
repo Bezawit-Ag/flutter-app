@@ -22,7 +22,11 @@ class FavoritesScreen extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 26),
               decoration: const BoxDecoration(
-                color: Color(0xFF0A0A0A),
+                gradient: LinearGradient(
+                  colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

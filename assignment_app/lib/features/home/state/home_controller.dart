@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'home_state.dart';
 import '../models/recipe_view_model.dart';
 import '../models/filter_settings.dart';
+import '../models/planned_meal.dart';
 
 class HomeController extends ChangeNotifier {
   HomeState state = HomeState(
@@ -98,4 +99,33 @@ class HomeController extends ChangeNotifier {
   List<RecipeViewModel> get favoriteRecipes {
     return state.allRecipes.where((recipe) => recipe.isFavorite).toList();
   }
+
+  void addMealToPlan(RecipeViewModel recipe, DateTime date, String mealType) {
+    final plannedMeal = PlannedMeal(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      recipe: recipe,
+      date: date,
+      mealType: mealType,
+    );
+    final updatedMeals = [...state.plannedMeals, plannedMeal];
+    state = state.copyWith(plannedMeals: updatedMeals);
+    notifyListeners();
+  }
+
+  void removeMealFromPlan(String mealId) {
+    final updatedMeals = state.plannedMeals.where((m) => m.id != mealId).toList();
+    state = state.copyWith(plannedMeals: updatedMeals);
+    notifyListeners();
+  }
+
+  List<PlannedMeal> get upcomingMeals {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    return state.plannedMeals
+        .where((meal) => meal.date.isAfter(today.subtract(const Duration(days: 1))))
+        .toList()
+      ..sort((a, b) => a.date.compareTo(b.date));
+  }
+
+  int get plannedMealsCount => state.plannedMeals.length;
 }
