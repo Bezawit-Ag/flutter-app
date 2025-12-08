@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../models/planned_meal.dart';
 import '../state/home_controller.dart';
+// A card widget to display a planned meal with its details.
 
 class PlannedMealCard extends StatelessWidget {
   final PlannedMeal meal;
