@@ -65,3 +65,17 @@ class RecipeViewModel {
     );
   }
 }
+
+class Ingredient {
+  final String name;
+  final String quantity;
+  final String unit;
+  bool isBought;
+
+  Ingredient({
+    required this.name,
+    this.quantity = "",
+    this.unit = "",
+    this.isBought = false,
+  });
+}

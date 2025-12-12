@@ -19,7 +19,7 @@ void main() {
 }
 
 class RecipeApp extends StatelessWidget {
-  RecipeApp({super.key}); 
+  const RecipeApp({super.key}); 
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,7 @@ class RecipeApp extends StatelessWidget {
 }
 
 class MainTabScreen extends StatefulWidget {
-  MainTabScreen({super.key}); 
+  const MainTabScreen({super.key}); 
 
   @override
   State<MainTabScreen> createState() => _MainTabScreenState();

@@ -7,7 +7,7 @@ import '../widgets/search_bar.dart';
 import '../widgets/filters_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({super.key});
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();

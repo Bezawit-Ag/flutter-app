@@ -5,7 +5,7 @@ import '../state/home_controller.dart';
 import '../widgets/recipe_card.dart';
 
 class FavoritesScreen extends StatelessWidget {
-  FavoritesScreen({super.key});
+  const FavoritesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
