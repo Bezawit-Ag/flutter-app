@@ -7,6 +7,9 @@ class RecipeViewModel {
   final String difficulty;
   final List<String> tags;
   final bool isFavorite;
+  final List<String> ingredients;
+  final List<String> instructions;
+  final int servings;
 
   RecipeViewModel({
     required this.title,
@@ -17,6 +20,9 @@ class RecipeViewModel {
     required this.difficulty,
     required this.tags,
     this.isFavorite = false,
+    this.ingredients = const [],
+    this.instructions = const [],
+    this.servings = 2,
   });
 
   RecipeViewModel copyWith({
@@ -28,6 +34,9 @@ class RecipeViewModel {
     String? difficulty,
     List<String>? tags,
     bool? isFavorite,
+    List<String>? ingredients,
+    List<String>? instructions,
+    int? servings,
   }) {
     return RecipeViewModel(
       title: title ?? this.title,
@@ -38,6 +47,9 @@ class RecipeViewModel {
       difficulty: difficulty ?? this.difficulty,
       tags: tags ?? this.tags,
       isFavorite: isFavorite ?? this.isFavorite,
+      ingredients: ingredients ?? this.ingredients,
+      instructions: instructions ?? this.instructions,
+      servings: servings ?? this.servings,
     );
   }
 }

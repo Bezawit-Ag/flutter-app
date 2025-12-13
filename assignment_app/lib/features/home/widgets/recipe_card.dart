@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/recipe_view_model.dart';
 import '../state/home_controller.dart';
+import '../screens/recipe_detail_screen.dart';
 
 class RecipeCard extends StatelessWidget {
   final RecipeViewModel recipe;
@@ -10,7 +11,16 @@ class RecipeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => RecipeDetailScreen(recipe: recipe),
+          ),
+        );
+      },
+      child: Container(
       decoration: BoxDecoration(
         color: const Color(0xFF151827),
         borderRadius: BorderRadius.circular(20),
@@ -155,6 +165,7 @@ class RecipeCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }
