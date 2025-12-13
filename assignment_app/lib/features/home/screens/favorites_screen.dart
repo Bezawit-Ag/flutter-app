@@ -12,7 +12,7 @@ class FavoritesScreen extends StatelessWidget {
     final controller = context.watch<HomeController>();
 
     return Scaffold(
-      backgroundColor: const Color(0xFF050816), 
+      backgroundColor: Colors.black, 
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

@@ -3,19 +3,38 @@ import 'package:provider/provider.dart';
 import '../models/recipe_view_model.dart';
 import '../state/home_controller.dart';
 
-class RecipeDetailScreen extends StatelessWidget {
+class RecipeDetailScreen extends StatefulWidget {
   final RecipeViewModel recipe;
 
   const RecipeDetailScreen({super.key, required this.recipe});
+
+  @override
+  State<RecipeDetailScreen> createState() => _RecipeDetailScreenState();
+}
+
+class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
+  int servings = 2;
+
+  @override
+  void initState() {
+    super.initState();
+    servings = widget.recipe.servings;
+  }
 
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<HomeController>();
     final currentRecipe = controller.state.allRecipes
         .firstWhere(
-          (r) => r.title == recipe.title,
-          orElse: () => recipe,
+          (r) => r.title == widget.recipe.title,
+          orElse: () => widget.recipe,
         );
+    
+    // Calculate nutrition per serving
+    final caloriesPerServing = (currentRecipe.calories / currentRecipe.servings).round();
+    final proteinPerServing = (currentRecipe.protein / currentRecipe.servings).round();
+    final carbsPerServing = (currentRecipe.carbs / currentRecipe.servings).round();
+    final fatPerServing = (currentRecipe.fat / currentRecipe.servings).round();
 
     return Scaffold(
       backgroundColor: const Color(0xFF050816),
@@ -96,7 +115,7 @@ class RecipeDetailScreen extends StatelessWidget {
             SliverAppBar(
               expandedHeight: 300,
               pinned: true,
-              backgroundColor: const Color(0xFF050816),
+              backgroundColor: Colors.black,
               flexibleSpace: FlexibleSpaceBar(
                 background: Stack(
                   fit: StackFit.expand,
@@ -121,27 +140,11 @@ class RecipeDetailScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: () => Navigator.pop(context),
-              ),
+              leading: Container(),
               actions: [
-                Consumer<HomeController>(
-                  builder: (context, controller, _) {
-                    return IconButton(
-                      icon: Icon(
-                        currentRecipe.isFavorite
-                            ? Icons.favorite
-                            : Icons.favorite_border,
-                        color: currentRecipe.isFavorite
-                            ? Colors.redAccent
-                            : Colors.white,
-                      ),
-                      onPressed: () {
-                        controller.toggleFavorite(currentRecipe.title);
-                      },
-                    );
-                  },
+                IconButton(
+                  icon: const Icon(Icons.close, color: Colors.white),
+                  onPressed: () => Navigator.pop(context),
                 ),
               ],
             ),
@@ -196,60 +199,116 @@ class RecipeDetailScreen extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 24),
-                    // Stats Row
+                    // Servings Control
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        _StatItem(
-                          icon: Icons.timer,
-                          value: "${currentRecipe.time}",
-                          label: "Minutes",
-                          color: Colors.blueAccent,
+                        const Text(
+                          'Servings',
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 16,
+                          ),
                         ),
-                        _StatItem(
-                          icon: Icons.local_fire_department,
-                          value: "${currentRecipe.calories}",
-                          label: "Calories",
-                          color: Colors.orangeAccent,
-                        ),
-                        _StatItem(
-                          icon: Icons.restaurant,
-                          value: "${currentRecipe.servings}",
-                          label: "Servings",
-                          color: Colors.greenAccent,
-                        ),
-                        _StatItem(
-                          icon: Icons.bar_chart,
-                          value: currentRecipe.difficulty,
-                          label: "Level",
-                          color: Colors.purpleAccent,
+                        const Spacer(),
+                        Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                if (servings > 1) {
+                                  setState(() {
+                                    servings--;
+                                  });
+                                }
+                              },
+                              icon: Container(
+                                width: 36,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                  color: Colors.green.withOpacity(0.2),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.remove,
+                                  color: Colors.green,
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              child: Text(
+                                '$servings',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  servings++;
+                                });
+                              },
+                              icon: Container(
+                                width: 36,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                  color: Colors.green.withOpacity(0.2),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.add,
+                                  color: Colors.green,
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
                     const SizedBox(height: 24),
-                    // Tags
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: currentRecipe.tags
-                          .map((tag) => Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 6,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.07),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Text(
-                                  "#$tag",
-                                  style: const TextStyle(
-                                    color: Colors.orangeAccent,
-                                    fontSize: 13,
-                                  ),
-                                ),
-                              ))
-                          .toList(),
+                    // Nutrition Cards
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _NutritionCard(
+                            value: '${(caloriesPerServing * servings)}',
+                            label: 'Calories',
+                            icon: Icons.local_fire_department,
+                            color: Colors.orange,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _NutritionCard(
+                            value: '${(proteinPerServing * servings)}g',
+                            label: 'Protein',
+                            icon: Icons.fitness_center,
+                            color: Colors.blue,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _NutritionCard(
+                            value: '${(carbsPerServing * servings)}g',
+                            label: 'Carbs',
+                            icon: Icons.grain,
+                            color: Colors.yellow,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _NutritionCard(
+                            value: '${(fatPerServing * servings)}g',
+                            label: 'Fat',
+                            icon: Icons.opacity,
+                            color: Colors.pink,
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 32),
                     // Ingredients Section
@@ -266,7 +325,7 @@ class RecipeDetailScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF151827),
+                          color: const Color(0xFF1A1A1A),
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Column(
@@ -279,12 +338,11 @@ class RecipeDetailScreen extends StatelessWidget {
                                       children: [
                                         Container(
                                           margin:
-                                              const EdgeInsets.only(right: 12),
-                                          width: 6,
-                                          height: 6,
-                                          decoration: const BoxDecoration(
-                                            color: Color(0xFFFF9800),
-                                            shape: BoxShape.circle,
+                                              const EdgeInsets.only(right: 12, top: 6),
+                                          child: const Icon(
+                                            Icons.check_circle,
+                                            color: Colors.green,
+                                            size: 20,
                                           ),
                                         ),
                                         Expanded(
@@ -367,49 +425,49 @@ class RecipeDetailScreen extends StatelessWidget {
   }
 }
 
-class _StatItem extends StatelessWidget {
-  final IconData icon;
+class _NutritionCard extends StatelessWidget {
   final String value;
   final String label;
+  final IconData icon;
   final Color color;
 
-  const _StatItem({
-    required this.icon,
+  const _NutritionCard({
     required this.value,
     required this.label,
+    required this.icon,
     required this.color,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.15),
-            shape: BoxShape.circle,
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF151827),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: color, size: 24),
+          const SizedBox(height: 8),
+          Text(
+            value,
+            style: TextStyle(
+              color: color,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          child: Icon(icon, color: color, size: 24),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          value,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.7),
+              fontSize: 12,
+            ),
           ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.white.withOpacity(0.6),
-            fontSize: 12,
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

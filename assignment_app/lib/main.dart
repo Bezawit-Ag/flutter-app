@@ -27,7 +27,7 @@ class RecipeApp extends StatelessWidget {
       title: 'Recipe Hub',
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color(0xFF0A0A0A),
+        scaffoldBackgroundColor: Colors.black,
         appBarTheme: const AppBarTheme(
           backgroundColor: Color(0xFFFF9800),
         ),
@@ -73,17 +73,17 @@ class _MainTabScreenState extends State<MainTabScreen> {
       body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        backgroundColor: const Color(0xFF0A0A0A),
+        backgroundColor: Colors.black,
         selectedItemColor: const Color(0xFFFF9800),
         unselectedItemColor: Colors.grey,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.restaurant_menu), label: 'Recipes'),
           BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favorites'),
           BottomNavigationBarItem(icon: Icon(Icons.add_circle), label: 'Create'),
-          BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: 'Plan'),
-          BottomNavigationBarItem(icon: Icon(Icons.list_alt), label: 'List'),
+          BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: 'Meal Plan'),
+          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Shopping'),
         ],
       ),
     );

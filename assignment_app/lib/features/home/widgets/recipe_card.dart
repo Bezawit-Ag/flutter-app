@@ -22,7 +22,7 @@ class RecipeCard extends StatelessWidget {
       },
       child: Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF151827),
+        color: const Color(0xFF1A1A1A),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -62,20 +62,20 @@ class RecipeCard extends StatelessWidget {
                 ),
                 // Meal type pill
                 Positioned(
-                  top: 12,
+                  bottom: 12,
                   left: 12,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 4),
+                        horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.45),
-                      borderRadius: BorderRadius.circular(20),
+                      color: _getMealTypeColor(recipe.mealType).withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      recipe.mealType,
+                      recipe.mealType.toLowerCase(),
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 12,
+                        fontSize: 11,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -135,31 +135,32 @@ class RecipeCard extends StatelessWidget {
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    _iconText(Icons.timer, "${recipe.time} min"),
-                    const SizedBox(width: 14),
+                    _iconText(Icons.timer, "${recipe.time}m"),
+                    const SizedBox(width: 12),
+                    _iconText(Icons.person, "${recipe.servings}"),
+                    const SizedBox(width: 12),
                     _iconText(Icons.local_fire_department, "${recipe.calories} cal"),
-                    const SizedBox(width: 14),
-                    _iconText(Icons.bar_chart, recipe.difficulty),
                   ],
                 ),
                 const SizedBox(height: 12),
-                Wrap(
-                  spacing: 8,
-                  children: recipe.tags
-                      .map((tag) => Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.07),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              "#$tag",
-                              style: const TextStyle(
-                                  color: Colors.orangeAccent, fontSize: 12),
-                            ),
-                          ))
-                      .toList(),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: _getDifficultyColor(recipe.difficulty).withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: _getDifficultyColor(recipe.difficulty),
+                      width: 1,
+                    ),
+                  ),
+                  child: Text(
+                    recipe.difficulty.toLowerCase(),
+                    style: TextStyle(
+                      color: _getDifficultyColor(recipe.difficulty),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -172,8 +173,9 @@ class RecipeCard extends StatelessWidget {
 
   Widget _iconText(IconData icon, String text) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: Colors.orangeAccent, size: 17),
+        Icon(icon, color: Colors.white70, size: 16),
         const SizedBox(width: 4),
         Text(
           text,
@@ -181,5 +183,33 @@ class RecipeCard extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Color _getDifficultyColor(String difficulty) {
+    switch (difficulty.toLowerCase()) {
+      case 'easy':
+        return Colors.green;
+      case 'medium':
+        return Colors.orange;
+      case 'hard':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  Color _getMealTypeColor(String mealType) {
+    switch (mealType.toLowerCase()) {
+      case 'breakfast':
+        return Colors.green;
+      case 'lunch':
+        return Colors.lightGreen;
+      case 'dinner':
+        return Colors.teal;
+      case 'snack':
+        return Colors.blue;
+      default:
+        return Colors.grey;
+    }
   }
 }

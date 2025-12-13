@@ -35,6 +35,9 @@ class HomeController extends ChangeNotifier {
         tags: ['healthy', 'quick', 'protein'],
         isFavorite: true,
         servings: 2,
+        protein: 14,
+        carbs: 25,
+        fat: 18,
         ingredients: [
           '2 slices of whole grain bread',
           '1 ripe avocado',
@@ -64,6 +67,9 @@ class HomeController extends ChangeNotifier {
         tags: ['salad', 'low-carb', 'protein'],
         isFavorite: false,
         servings: 2,
+        protein: 28,
+        carbs: 12,
+        fat: 22,
         ingredients: [
           '2 boneless chicken breasts',
           '1 large head of romaine lettuce',
@@ -109,14 +115,36 @@ class HomeController extends ChangeNotifier {
     _filterRecipes();
   }
 
+  void updateMealTypeFilter(String? mealType) {
+    state = state.copyWith(
+      filters: state.filters.copyWith(
+        selectedMealType: state.filters.selectedMealType == mealType ? null : mealType,
+      ),
+    );
+    _filterRecipes();
+  }
+
+  void updateDifficultyFilter(String? difficulty) {
+    state = state.copyWith(
+      filters: state.filters.copyWith(
+        selectedDifficulty: state.filters.selectedDifficulty == difficulty ? null : difficulty,
+      ),
+    );
+    _filterRecipes();
+  }
+
   void _filterRecipes() {
     final q = state.filters.searchQuery.toLowerCase();
     final tags = state.filters.selectedTags;
+    final mealType = state.filters.selectedMealType;
+    final difficulty = state.filters.selectedDifficulty;
 
     final filtered = state.allRecipes.where((r) {
       final matchQuery = r.title.toLowerCase().contains(q);
       final matchTags = tags.isEmpty || tags.every((t) => r.tags.contains(t));
-      return matchQuery && matchTags;
+      final matchMealType = mealType == null || r.mealType == mealType;
+      final matchDifficulty = difficulty == null || r.difficulty == difficulty;
+      return matchQuery && matchTags && matchMealType && matchDifficulty;
     }).toList();
 
     state = state.copyWith(visibleRecipes: filtered);

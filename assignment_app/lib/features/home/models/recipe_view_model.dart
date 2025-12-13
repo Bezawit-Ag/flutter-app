@@ -10,6 +10,9 @@ class RecipeViewModel {
   final List<String> ingredients;
   final List<String> instructions;
   final int servings;
+  final int protein; // grams
+  final int carbs; // grams
+  final int fat; // grams
 
   RecipeViewModel({
     required this.title,
@@ -23,6 +26,9 @@ class RecipeViewModel {
     this.ingredients = const [],
     this.instructions = const [],
     this.servings = 2,
+    this.protein = 0,
+    this.carbs = 0,
+    this.fat = 0,
   });
 
   RecipeViewModel copyWith({
@@ -37,6 +43,9 @@ class RecipeViewModel {
     List<String>? ingredients,
     List<String>? instructions,
     int? servings,
+    int? protein,
+    int? carbs,
+    int? fat,
   }) {
     return RecipeViewModel(
       title: title ?? this.title,
@@ -50,6 +59,9 @@ class RecipeViewModel {
       ingredients: ingredients ?? this.ingredients,
       instructions: instructions ?? this.instructions,
       servings: servings ?? this.servings,
+      protein: protein ?? this.protein,
+      carbs: carbs ?? this.carbs,
+      fat: fat ?? this.fat,
     );
   }
 }
