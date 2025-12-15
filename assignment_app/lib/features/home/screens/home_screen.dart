@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../state/home_controller.dart';
 import '../widgets/recipe_card.dart';
 import '../widgets/search_bar.dart';
-import '../widgets/filters_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final controller = context.watch<HomeController>();
 
     return Scaffold(
-      backgroundColor: Colors.black, 
+      backgroundColor: Colors.black,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,9 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-              decoration: const BoxDecoration(
-                color: Colors.black,
-              ),
+              decoration: const BoxDecoration(color: Colors.black),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -97,19 +94,14 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                decoration: const BoxDecoration(
-                  color: Colors.black,
-                ),
+                decoration: const BoxDecoration(color: Colors.black),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Meal Type Filter
                     const Text(
                       'Meal Type',
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
-                      ),
+                      style: TextStyle(color: Colors.white70, fontSize: 14),
                     ),
                     const SizedBox(height: 8),
                     GestureDetector(
@@ -129,7 +121,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              controller.state.filters.selectedMealType ?? 'All',
+                              controller.state.filters.selectedMealType ??
+                                  'All',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,
@@ -148,10 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     // Difficulty Filter
                     const Text(
                       'Difficulty',
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
-                      ),
+                      style: TextStyle(color: Colors.white70, fontSize: 14),
                     ),
                     const SizedBox(height: 8),
                     GestureDetector(
@@ -171,7 +161,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              controller.state.filters.selectedDifficulty ?? 'All',
+                              controller.state.filters.selectedDifficulty ??
+                                  'All',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,
@@ -224,23 +215,26 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: ['All', 'Breakfast', 'Lunch', 'Dinner', 'Snack']
-              .map((type) => ListTile(
-                    title: Text(
-                      type,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    onTap: () {
-                      controller.updateMealTypeFilter(
-                        type == 'All' ? null : type,
-                      );
-                      Navigator.pop(context);
-                    },
-                    trailing: controller.state.filters.selectedMealType == type ||
-                            (type == 'All' &&
-                                controller.state.filters.selectedMealType == null)
-                        ? const Icon(Icons.check, color: Colors.orange)
-                        : null,
-                  ))
+              .map(
+                (type) => ListTile(
+                  title: Text(
+                    type,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                  onTap: () {
+                    controller.updateMealTypeFilter(
+                      type == 'All' ? null : type,
+                    );
+                    Navigator.pop(context);
+                  },
+                  trailing:
+                      controller.state.filters.selectedMealType == type ||
+                          (type == 'All' &&
+                              controller.state.filters.selectedMealType == null)
+                      ? const Icon(Icons.check, color: Colors.orange)
+                      : null,
+                ),
+              )
               .toList(),
         ),
       ),
@@ -259,25 +253,28 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: ['All', 'Easy', 'Medium', 'Hard']
-              .map((difficulty) => ListTile(
-                    title: Text(
-                      difficulty,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    onTap: () {
-                      controller.updateDifficultyFilter(
-                        difficulty == 'All' ? null : difficulty,
-                      );
-                      Navigator.pop(context);
-                    },
-                    trailing: controller.state.filters.selectedDifficulty ==
-                                difficulty ||
-                            (difficulty == 'All' &&
-                                controller.state.filters.selectedDifficulty ==
-                                    null)
-                        ? const Icon(Icons.check, color: Colors.orange)
-                        : null,
-                  ))
+              .map(
+                (difficulty) => ListTile(
+                  title: Text(
+                    difficulty,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                  onTap: () {
+                    controller.updateDifficultyFilter(
+                      difficulty == 'All' ? null : difficulty,
+                    );
+                    Navigator.pop(context);
+                  },
+                  trailing:
+                      controller.state.filters.selectedDifficulty ==
+                              difficulty ||
+                          (difficulty == 'All' &&
+                              controller.state.filters.selectedDifficulty ==
+                                  null)
+                      ? const Icon(Icons.check, color: Colors.orange)
+                      : null,
+                ),
+              )
               .toList(),
         ),
       ),

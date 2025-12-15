@@ -1,4 +1,4 @@
-class RecipeViewModel {
+cclass RecipeViewModel {
   final String title;
   final String image;
   final String mealType; // Breakfast, Lunch, etc.
@@ -64,18 +64,4 @@ class RecipeViewModel {
       fat: fat ?? this.fat,
     );
   }
-}
-
-class Ingredient {
-  final String name;
-  final String quantity;
-  final String unit;
-  bool isBought;
-
-  Ingredient({
-    required this.name,
-    this.quantity = "",
-    this.unit = "",
-    this.isBought = false,
-  });
 }
