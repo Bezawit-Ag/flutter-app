@@ -12,129 +12,96 @@ class MealPlannerScreen extends StatelessWidget {
     final controller = context.watch<HomeController>();
 
     return Scaffold(
-      backgroundColor: const Color(0xFF050816),
+      backgroundColor: Colors.black,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 26),
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+              decoration: const BoxDecoration(color: Colors.black),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.calendar_today,
-                            color: Colors.white,
-                            size: 24,
-                          ),
-                          const SizedBox(width: 12),
-                          const Text(
-                            'Meal Planner',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 26,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
+                      const Icon(
+                        Icons.calendar_today,
+                        color: Colors.white,
+                        size: 24,
                       ),
-                      if (controller.plannedMealsCount > 0)
-                        TextButton(
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Shopping list generated!'),
-                                backgroundColor: Color(0xFF6366F1),
-                              ),
-                            );
-                          },
-                          style: TextButton.styleFrom(
-                            backgroundColor: Colors.white.withOpacity(0.2),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 8,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          child: const Text(
-                            'Generate List',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                      const SizedBox(width: 12),
+                      const Text(
+                        'Meal Planner',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
                         ),
+                      ),
                     ],
                   ),
-                  const SizedBox(height: 6),
-                  Text(
-                    '${controller.plannedMealsCount} meals planned',
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 14,
+                  if (controller.plannedMealsCount > 0)
+                    TextButton(
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Shopping list generated!'),
+                            backgroundColor: Color(0xFFFF9800),
+                          ),
+                        );
+                      },
+                      style: TextButton.styleFrom(
+                        backgroundColor: const Color(0xFF1A1A1A),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        'Generate List',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(20),
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+              child: GestureDetector(
+                onTap: () => _showAddMealDialog(context, controller),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 16,
                   ),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () => _showAddMealDialog(context, controller),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1A1A1A),
                     borderRadius: BorderRadius.circular(16),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 16,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(Icons.add, color: Colors.white, size: 24),
+                      SizedBox(width: 12),
+                      Text(
+                        'Add Meal to Plan',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(
-                            Icons.add,
-                            color: Colors.white,
-                            size: 24,
-                          ),
-                          SizedBox(width: 12),
-                          Text(
-                            'Add Meal to Plan',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    ],
                   ),
                 ),
               ),
@@ -334,12 +301,10 @@ class MealPlannerScreen extends StatelessWidget {
                       ),
                       underline: Container(),
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      items: ['Breakfast', 'Lunch', 'Dinner', 'Snack']
-                          .map((type) {
-                        return DropdownMenuItem(
-                          value: type,
-                          child: Text(type),
-                        );
+                      items: ['Breakfast', 'Lunch', 'Dinner', 'Snack'].map((
+                        type,
+                      ) {
+                        return DropdownMenuItem(value: type, child: Text(type));
                       }).toList(),
                       onChanged: (value) {
                         setState(() {
@@ -372,7 +337,7 @@ class MealPlannerScreen extends StatelessWidget {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Meal added to plan!'),
-                          backgroundColor: Color(0xFF6366F1),
+                          backgroundColor: Color(0xFFFF9800),
                         ),
                       );
                     }
@@ -389,4 +354,3 @@ class MealPlannerScreen extends StatelessWidget {
     );
   }
 }
-
