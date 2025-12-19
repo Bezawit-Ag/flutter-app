@@ -1,7 +1,10 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/recipe_view_model.dart';
 import '../state/home_controller.dart';
+import '../../shopping_list/state/shopping_list_controller.dart';
+import '../../shopping_list/widgets/ingredient_selection_dialog.dart';
 
 class RecipeDetailScreen extends StatefulWidget {
   final RecipeViewModel recipe;
@@ -24,16 +27,18 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<HomeController>();
-    final currentRecipe = controller.state.allRecipes
-        .firstWhere(
-          (r) => r.title == widget.recipe.title,
-          orElse: () => widget.recipe,
-        );
-    
+    final currentRecipe = controller.state.allRecipes.firstWhere(
+      (r) => r.title == widget.recipe.title,
+      orElse: () => widget.recipe,
+    );
+
     // Calculate nutrition per serving
-    final caloriesPerServing = (currentRecipe.calories / currentRecipe.servings).round();
-    final proteinPerServing = (currentRecipe.protein / currentRecipe.servings).round();
-    final carbsPerServing = (currentRecipe.carbs / currentRecipe.servings).round();
+    final caloriesPerServing = (currentRecipe.calories / currentRecipe.servings)
+        .round();
+    final proteinPerServing = (currentRecipe.protein / currentRecipe.servings)
+        .round();
+    final carbsPerServing = (currentRecipe.carbs / currentRecipe.servings)
+        .round();
     final fatPerServing = (currentRecipe.fat / currentRecipe.servings).round();
 
     return Scaffold(
@@ -88,11 +93,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [
-                Icon(
-                  Icons.restaurant_menu,
-                  color: Colors.white,
-                  size: 24,
-                ),
+                Icon(Icons.restaurant_menu, color: Colors.white, size: 24),
                 SizedBox(width: 12),
                 Text(
                   'I\'m Ready to Cook!',
@@ -120,10 +121,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                 background: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Image.asset(
-                      currentRecipe.image,
-                      fit: BoxFit.cover,
-                    ),
+                    _buildRecipeImage(currentRecipe.image),
                     // Dark gradient overlay
                     DecoratedBox(
                       decoration: BoxDecoration(
@@ -177,7 +175,9 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                                   vertical: 6,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFFF9800).withOpacity(0.2),
+                                  color: const Color(
+                                    0xFFFF9800,
+                                  ).withOpacity(0.2),
                                   borderRadius: BorderRadius.circular(20),
                                   border: Border.all(
                                     color: const Color(0xFFFF9800),
@@ -204,10 +204,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                       children: [
                         const Text(
                           'Servings',
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 16,
-                          ),
+                          style: TextStyle(color: Colors.white70, fontSize: 16),
                         ),
                         const Spacer(),
                         Row(
@@ -235,7 +232,9 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                               ),
                             ),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                              ),
                               child: Text(
                                 '$servings',
                                 style: const TextStyle(
@@ -313,13 +312,55 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                     const SizedBox(height: 32),
                     // Ingredients Section
                     if (currentRecipe.ingredients.isNotEmpty) ...[
-                      const Text(
-                        'Ingredients',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        children: [
+                          const Text(
+                            'Ingredients',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const Spacer(),
+                          Consumer<ShoppingListController>(
+                            builder: (context, shoppingController, _) {
+                              return TextButton.icon(
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) =>
+                                        IngredientSelectionDialog(
+                                          ingredients:
+                                              currentRecipe.ingredients,
+                                        ),
+                                  );
+                                },
+                                icon: const Icon(
+                                  Icons.add_shopping_cart,
+                                  color: Colors.orange,
+                                  size: 20,
+                                ),
+                                label: const Text(
+                                  'Add to List',
+                                  style: TextStyle(
+                                    color: Colors.orange,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                style: TextButton.styleFrom(
+                                  backgroundColor: Colors.orange.withOpacity(
+                                    0.1,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 16),
                       Container(
@@ -330,33 +371,37 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                         ),
                         child: Column(
                           children: currentRecipe.ingredients
-                              .map((ingredient) => Padding(
-                                    padding: const EdgeInsets.only(bottom: 12),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          margin:
-                                              const EdgeInsets.only(right: 12, top: 6),
-                                          child: const Icon(
-                                            Icons.check_circle,
-                                            color: Colors.green,
-                                            size: 20,
+                              .map(
+                                (ingredient) => Padding(
+                                  padding: const EdgeInsets.only(bottom: 12),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        margin: const EdgeInsets.only(
+                                          right: 12,
+                                          top: 6,
+                                        ),
+                                        child: const Icon(
+                                          Icons.check_circle,
+                                          color: Colors.green,
+                                          size: 20,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          ingredient,
+                                          style: const TextStyle(
+                                            color: Colors.white70,
+                                            fontSize: 15,
                                           ),
                                         ),
-                                        Expanded(
-                                          child: Text(
-                                            ingredient,
-                                            style: const TextStyle(
-                                              color: Colors.white70,
-                                              fontSize: 15,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ))
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
                               .toList(),
                         ),
                       ),
@@ -374,46 +419,48 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                       ),
                       const SizedBox(height: 16),
                       ...currentRecipe.instructions.asMap().entries.map(
-                            (entry) => Padding(
-                              padding: const EdgeInsets.only(bottom: 20),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(right: 16),
-                                    width: 32,
-                                    height: 32,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFFF9800),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        "${entry.key + 1}",
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
+                        (entry) => Padding(
+                          padding: const EdgeInsets.only(bottom: 20),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.only(right: 16),
+                                width: 32,
+                                height: 32,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFFF9800),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "${entry.key + 1}",
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  Expanded(
-                                    child: Text(
-                                      entry.value,
-                                      style: const TextStyle(
-                                        color: Colors.white70,
-                                        fontSize: 15,
-                                        height: 1.5,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
-                            ),
+                              Expanded(
+                                child: Text(
+                                  entry.value,
+                                  style: const TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 15,
+                                    height: 1.5,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
+                        ),
+                      ),
                     ],
-                    const SizedBox(height: 100), // Extra space for floating button
+                    const SizedBox(
+                      height: 100,
+                    ), // Extra space for floating button
                   ],
                 ),
               ),
@@ -422,6 +469,66 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
         ),
       ),
     );
+  }
+
+  Widget _buildRecipeImage(String imageUrl) {
+    if (imageUrl.startsWith('data:image')) {
+      final base64String = imageUrl.split(',').last;
+      try {
+        final imageBytes = base64Decode(base64String);
+        return Image.memory(
+          imageBytes,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              color: Colors.grey[800],
+              child: const Center(
+                child: Icon(
+                  Icons.image_not_supported,
+                  color: Colors.grey,
+                  size: 64,
+                ),
+              ),
+            );
+          },
+        );
+      } catch (e) {
+        return Container(
+          color: Colors.grey[800],
+          child: const Center(
+            child: Icon(
+              Icons.image_not_supported,
+              color: Colors.grey,
+              size: 64,
+            ),
+          ),
+        );
+      }
+    } else if (imageUrl.isNotEmpty) {
+      return Image.asset(
+        imageUrl,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            color: Colors.grey[800],
+            child: const Center(
+              child: Icon(
+                Icons.image_not_supported,
+                color: Colors.grey,
+                size: 64,
+              ),
+            ),
+          );
+        },
+      );
+    } else {
+      return Container(
+        color: Colors.grey[800],
+        child: const Center(
+          child: Icon(Icons.image_not_supported, color: Colors.grey, size: 64),
+        ),
+      );
+    }
   }
 }
 
@@ -471,4 +578,3 @@ class _NutritionCard extends StatelessWidget {
     );
   }
 }
-
