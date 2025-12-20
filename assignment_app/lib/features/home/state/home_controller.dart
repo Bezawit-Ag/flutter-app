@@ -3,6 +3,7 @@ import 'home_state.dart';
 import '../models/recipe_view_model.dart';
 import '../models/filter_settings.dart';
 import '../models/planned_meal.dart';
+import '../../../services/firebase_service.dart';
 
 class HomeController extends ChangeNotifier {
   HomeState state = HomeState(
@@ -11,8 +12,11 @@ class HomeController extends ChangeNotifier {
     filters: FilterSettings(),
   );
 
+  final FirebaseService _firebaseService = FirebaseService();
+
   HomeController() {
     _loadRecipes();
+    loadRecipesFromFirebase();
   }
 
   List<String> get availableTags {
@@ -93,32 +97,27 @@ class HomeController extends ChangeNotifier {
       ),
     ];
 
-    state = state.copyWith(
-      allRecipes: sample,
-      visibleRecipes: sample,
-    );
+    state = state.copyWith(allRecipes: sample, visibleRecipes: sample);
 
     notifyListeners();
   }
 
   void updateSearch(String value) {
-    state = state.copyWith(
-      filters: state.filters.copyWith(searchQuery: value),
-    );
+    state = state.copyWith(filters: state.filters.copyWith(searchQuery: value));
     _filterRecipes();
   }
 
   void updateTags(List<String> tags) {
-    state = state.copyWith(
-      filters: state.filters.copyWith(selectedTags: tags),
-    );
+    state = state.copyWith(filters: state.filters.copyWith(selectedTags: tags));
     _filterRecipes();
   }
 
   void updateMealTypeFilter(String? mealType) {
     state = state.copyWith(
       filters: state.filters.copyWith(
-        selectedMealType: state.filters.selectedMealType == mealType ? null : mealType,
+        selectedMealType: state.filters.selectedMealType == mealType
+            ? null
+            : mealType,
       ),
     );
     _filterRecipes();
@@ -127,7 +126,9 @@ class HomeController extends ChangeNotifier {
   void updateDifficultyFilter(String? difficulty) {
     state = state.copyWith(
       filters: state.filters.copyWith(
-        selectedDifficulty: state.filters.selectedDifficulty == difficulty ? null : difficulty,
+        selectedDifficulty: state.filters.selectedDifficulty == difficulty
+            ? null
+            : difficulty,
       ),
     );
     _filterRecipes();
@@ -160,7 +161,7 @@ class HomeController extends ChangeNotifier {
     }).toList();
 
     state = state.copyWith(allRecipes: updatedRecipes);
-    _filterRecipes(); 
+    _filterRecipes();
     notifyListeners();
   }
 
@@ -181,7 +182,9 @@ class HomeController extends ChangeNotifier {
   }
 
   void removeMealFromPlan(String mealId) {
-    final updatedMeals = state.plannedMeals.where((m) => m.id != mealId).toList();
+    final updatedMeals = state.plannedMeals
+        .where((m) => m.id != mealId)
+        .toList();
     state = state.copyWith(plannedMeals: updatedMeals);
     notifyListeners();
   }
@@ -190,10 +193,27 @@ class HomeController extends ChangeNotifier {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     return state.plannedMeals
-        .where((meal) => meal.date.isAfter(today.subtract(const Duration(days: 1))))
+        .where(
+          (meal) => meal.date.isAfter(today.subtract(const Duration(days: 1))),
+        )
         .toList()
       ..sort((a, b) => a.date.compareTo(b.date));
   }
 
   int get plannedMealsCount => state.plannedMeals.length;
+
+  Future<void> loadRecipesFromFirebase() async {
+    try {
+      final firebaseRecipes = await _firebaseService.loadRecipes();
+      final allRecipes = [...state.allRecipes, ...firebaseRecipes];
+      state = state.copyWith(
+        allRecipes: allRecipes,
+        visibleRecipes: allRecipes,
+      );
+      _filterRecipes();
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error loading recipes from Firebase: $e');
+    }
+  }
 }
