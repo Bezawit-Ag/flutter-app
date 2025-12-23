@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -34,12 +35,7 @@ class PlannedMealCard extends StatelessWidget {
               topLeft: Radius.circular(16),
               bottomLeft: Radius.circular(16),
             ),
-            child: Image.asset(
-              meal.recipe.image,
-              width: 100,
-              height: 100,
-              fit: BoxFit.cover,
-            ),
+            child: _buildRecipeImage(meal.recipe.image),
           ),
           Expanded(
             child: Padding(
@@ -79,18 +75,11 @@ class PlannedMealCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Icon(
-                        Icons.timer,
-                        size: 14,
-                        color: Colors.grey[400],
-                      ),
+                      Icon(Icons.timer, size: 14, color: Colors.grey[400]),
                       const SizedBox(width: 4),
                       Text(
                         '${meal.recipe.time} min',
-                        style: TextStyle(
-                          color: Colors.grey[400],
-                          fontSize: 12,
-                        ),
+                        style: TextStyle(color: Colors.grey[400], fontSize: 12),
                       ),
                     ],
                   ),
@@ -105,10 +94,7 @@ class PlannedMealCard extends StatelessWidget {
                       const SizedBox(width: 6),
                       Text(
                         '${dayFormat.format(meal.date)}, ${dateFormat.format(meal.date)}',
-                        style: TextStyle(
-                          color: Colors.grey[400],
-                          fontSize: 12,
-                        ),
+                        style: TextStyle(color: Colors.grey[400], fontSize: 12),
                       ),
                     ],
                   ),
@@ -127,15 +113,62 @@ class PlannedMealCard extends StatelessWidget {
                 ),
               );
             },
-            icon: const Icon(
-              Icons.close,
-              color: Colors.grey,
-              size: 20,
-            ),
+            icon: const Icon(Icons.close, color: Colors.grey, size: 20),
           ),
         ],
       ),
     );
   }
-}
 
+  Widget _buildRecipeImage(String imageUrl) {
+    if (imageUrl.startsWith('data:image')) {
+      final base64String = imageUrl.split(',').last;
+      try {
+        final imageBytes = base64Decode(base64String);
+        return Image.memory(
+          imageBytes,
+          width: 100,
+          height: 100,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              width: 100,
+              height: 100,
+              color: Colors.grey[800],
+              child: const Icon(Icons.image_not_supported, color: Colors.grey),
+            );
+          },
+        );
+      } catch (e) {
+        return Container(
+          width: 100,
+          height: 100,
+          color: Colors.grey[800],
+          child: const Icon(Icons.image_not_supported, color: Colors.grey),
+        );
+      }
+    } else if (imageUrl.isNotEmpty) {
+      return Image.asset(
+        imageUrl,
+        width: 100,
+        height: 100,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            width: 100,
+            height: 100,
+            color: Colors.grey[800],
+            child: const Icon(Icons.image_not_supported, color: Colors.grey),
+          );
+        },
+      );
+    } else {
+      return Container(
+        width: 100,
+        height: 100,
+        color: Colors.grey[800],
+        child: const Icon(Icons.image_not_supported, color: Colors.grey),
+      );
+    }
+  }
+}
