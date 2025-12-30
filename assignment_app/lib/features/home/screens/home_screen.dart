@@ -197,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisCount: 2,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
-                  childAspectRatio: 0.9,
+                  childAspectRatio: 0.7,
                 ),
                 itemCount: controller.state.visibleRecipes.length,
                 itemBuilder: (context, index) {

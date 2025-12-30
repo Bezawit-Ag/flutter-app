@@ -34,6 +34,7 @@ class RecipeCard extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
@@ -41,7 +42,7 @@ class RecipeCard extends StatelessWidget {
               children: [
                 Image.asset(
                   recipe.image,
-                  height: 170,
+                  height: 120,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),
@@ -120,49 +121,54 @@ class RecipeCard extends StatelessWidget {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  recipe.title,
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    _iconText(Icons.timer, "${recipe.time}m"),
-                    const SizedBox(width: 12),
-                    _iconText(Icons.person, "${recipe.servings}"),
-                    const SizedBox(width: 12),
-                    _iconText(Icons.local_fire_department, "${recipe.calories} cal"),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: _getDifficultyColor(recipe.difficulty).withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: _getDifficultyColor(recipe.difficulty),
-                      width: 1,
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    recipe.title,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 6),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 4,
+                    children: [
+                      _iconText(Icons.timer, "${recipe.time}m"),
+                      _iconText(Icons.person, "${recipe.servings}"),
+                      _iconText(Icons.local_fire_department, "${recipe.calories} cal"),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: _getDifficultyColor(recipe.difficulty).withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: _getDifficultyColor(recipe.difficulty),
+                        width: 1,
+                      ),
+                    ),
+                    child: Text(
+                      recipe.difficulty.toLowerCase(),
+                      style: TextStyle(
+                        color: _getDifficultyColor(recipe.difficulty),
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-                  child: Text(
-                    recipe.difficulty.toLowerCase(),
-                    style: TextStyle(
-                      color: _getDifficultyColor(recipe.difficulty),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
@@ -175,11 +181,11 @@ class RecipeCard extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: Colors.white70, size: 16),
-        const SizedBox(width: 4),
+        Icon(icon, color: Colors.white70, size: 14),
+        const SizedBox(width: 3),
         Text(
           text,
-          style: const TextStyle(color: Colors.white70, fontSize: 13),
+          style: const TextStyle(color: Colors.white70, fontSize: 11),
         ),
       ],
     );
