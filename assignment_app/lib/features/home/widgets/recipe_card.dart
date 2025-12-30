@@ -121,7 +121,8 @@ class RecipeCard extends StatelessWidget {
               ],
             ),
           ),
-          Expanded(
+          Flexible(
+            fit: FlexFit.loose,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               child: Column(
