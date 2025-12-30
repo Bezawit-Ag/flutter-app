@@ -10,16 +10,14 @@ import 'features/home/state/home_controller.dart';
 void main() {
   runApp(
     MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => HomeController()),
-      ],
-      child: RecipeApp(), 
+      providers: [ChangeNotifierProvider(create: (_) => HomeController())],
+      child: RecipeApp(),
     ),
   );
 }
 
 class RecipeApp extends StatelessWidget {
-  RecipeApp({super.key}); 
+  const RecipeApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,23 +26,19 @@ class RecipeApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: Colors.black,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFFFF9800),
-        ),
+        appBarTheme: const AppBarTheme(backgroundColor: Color(0xFFFF9800)),
         colorScheme: ColorScheme.fromSwatch(
           primarySwatch: Colors.deepOrange,
           brightness: Brightness.dark,
-        ).copyWith(
-          secondary: const Color(0xFFFF9800),
-        ),
+        ).copyWith(secondary: const Color(0xFFFF9800)),
       ),
-      home: MainTabScreen(), 
+      home: MainTabScreen(),
     );
   }
 }
 
 class MainTabScreen extends StatefulWidget {
-  MainTabScreen({super.key}); 
+  const MainTabScreen({super.key});
 
   @override
   State<MainTabScreen> createState() => _MainTabScreenState();
@@ -54,8 +48,8 @@ class _MainTabScreenState extends State<MainTabScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
-    HomeScreen(), 
-    FavoritesScreen(), 
+    HomeScreen(),
+    FavoritesScreen(),
     const Placeholder(child: Text('Create Recipe Screen')),
     const MealPlannerScreen(),
     const Placeholder(child: Text('Shopping List Screen')),
@@ -79,11 +73,26 @@ class _MainTabScreenState extends State<MainTabScreen> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.restaurant_menu), label: 'Recipes'),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favorites'),
-          BottomNavigationBarItem(icon: Icon(Icons.add_circle), label: 'Create'),
-          BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: 'Meal Plan'),
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Shopping'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.restaurant_menu),
+            label: 'Recipes',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: 'Favorites',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_circle),
+            label: 'Create',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_today),
+            label: 'Meal Plan',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart),
+            label: 'Shopping',
+          ),
         ],
       ),
     );
