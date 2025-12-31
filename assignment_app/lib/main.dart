@@ -1,13 +1,29 @@
-// lib/main.dart
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'features/home/screens/home_screen.dart';
 import 'features/home/screens/favorites_screen.dart';
 import 'features/home/screens/meal_planner_screen.dart';
+import 'features/home/screens/create_recipe_screen.dart';
 import 'features/home/state/home_controller.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    await Firebase.initializeApp(
+      options: const FirebaseOptions(
+        apiKey: 'AIzaSyDummyKey',
+        appId: '1:123456789:android:abcdef',
+        messagingSenderId: '123456789',
+        projectId: 'recipe-app-6fea3',
+        databaseURL: 'https://recipe-app-6fea3-default-rtdb.firebaseio.com/',
+      ),
+    );
+  } catch (e) {
+    debugPrint('Firebase initialization error: $e');
+  }
   runApp(
     MultiProvider(
       providers: [
@@ -56,7 +72,7 @@ class _MainTabScreenState extends State<MainTabScreen> {
   final List<Widget> _screens = [
     HomeScreen(), 
     FavoritesScreen(), 
-    const Placeholder(child: Text('Create Recipe Screen')),
+    const CreateRecipeScreen(),
     const MealPlannerScreen(),
     const Placeholder(child: Text('Shopping List Screen')),
   ];
