@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/recipe_view_model.dart';
@@ -120,10 +121,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                 background: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Image.asset(
-                      currentRecipe.image,
-                      fit: BoxFit.cover,
-                    ),
+                    _buildRecipeImage(currentRecipe.image),
                     // Dark gradient overlay
                     DecoratedBox(
                       decoration: BoxDecoration(
@@ -422,6 +420,54 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
         ),
       ),
     );
+  }
+
+  Widget _buildRecipeImage(String imageUrl) {
+    if (imageUrl.startsWith('data:image')) {
+      final base64String = imageUrl.split(',').last;
+      try {
+        final imageBytes = base64Decode(base64String);
+        return Image.memory(
+          imageBytes,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              color: Colors.grey[800],
+              child: const Center(
+                child: Icon(Icons.image_not_supported, color: Colors.grey, size: 64),
+              ),
+            );
+          },
+        );
+      } catch (e) {
+        return Container(
+          color: Colors.grey[800],
+          child: const Center(
+            child: Icon(Icons.image_not_supported, color: Colors.grey, size: 64),
+          ),
+        );
+      }
+    } else if (imageUrl.isNotEmpty) {
+      return Image.asset(
+        imageUrl,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            color: Colors.grey[800],
+            child: const Center(
+              child: Icon(Icons.image_not_supported, color: Colors.grey, size: 64),
+            ),
+          );
+        },
+      );
+    } else {
+      return Container(
+        color: Colors.grey[800],
+        child: const Center(
+          child: Icon(Icons.image_not_supported, color: Colors.grey, size: 64),
+        ),
+      );
+    }
   }
 }
 
