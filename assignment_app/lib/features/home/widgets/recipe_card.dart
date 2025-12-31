@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/recipe_view_model.dart';
@@ -40,12 +41,7 @@ class RecipeCard extends StatelessWidget {
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
             child: Stack(
               children: [
-                Image.asset(
-                  recipe.image,
-                  height: 120,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                ),
+                _buildRecipeImage(recipe.image),
                 // Dark gradient at the bottom of the image
                 Positioned.fill(
                   child: DecoratedBox(
@@ -125,50 +121,50 @@ class RecipeCard extends StatelessWidget {
             fit: FlexFit.loose,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    recipe.title,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+              children: [
+                Text(
+                  recipe.title,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                         fontSize: 14),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                  ),
+                ),
                   const SizedBox(height: 6),
                   Wrap(
                     spacing: 6,
                     runSpacing: 4,
-                    children: [
-                      _iconText(Icons.timer, "${recipe.time}m"),
-                      _iconText(Icons.person, "${recipe.servings}"),
-                      _iconText(Icons.local_fire_department, "${recipe.calories} cal"),
-                    ],
-                  ),
+                  children: [
+                    _iconText(Icons.timer, "${recipe.time}m"),
+                    _iconText(Icons.person, "${recipe.servings}"),
+                    _iconText(Icons.local_fire_department, "${recipe.calories} cal"),
+                  ],
+                ),
                   const SizedBox(height: 6),
-                  Container(
+                Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: _getDifficultyColor(recipe.difficulty).withOpacity(0.2),
+                  decoration: BoxDecoration(
+                    color: _getDifficultyColor(recipe.difficulty).withOpacity(0.2),
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: _getDifficultyColor(recipe.difficulty),
-                        width: 1,
-                      ),
-                    ),
-                    child: Text(
-                      recipe.difficulty.toLowerCase(),
-                      style: TextStyle(
-                        color: _getDifficultyColor(recipe.difficulty),
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    border: Border.all(
+                      color: _getDifficultyColor(recipe.difficulty),
+                      width: 1,
                     ),
                   ),
-                ],
+                  child: Text(
+                    recipe.difficulty.toLowerCase(),
+                    style: TextStyle(
+                      color: _getDifficultyColor(recipe.difficulty),
+                        fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
               ),
             ),
           ),
@@ -176,6 +172,58 @@ class RecipeCard extends StatelessWidget {
       ),
       ),
     );
+  }
+
+  Widget _buildRecipeImage(String imageUrl) {
+    if (imageUrl.startsWith('data:image')) {
+      final base64String = imageUrl.split(',').last;
+      try {
+        final imageBytes = base64Decode(base64String);
+        return Image.memory(
+          imageBytes,
+          height: 120,
+          width: double.infinity,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              height: 120,
+              width: double.infinity,
+              color: Colors.grey[800],
+              child: const Icon(Icons.image_not_supported, color: Colors.grey),
+            );
+          },
+        );
+      } catch (e) {
+        return Container(
+          height: 120,
+          width: double.infinity,
+          color: Colors.grey[800],
+          child: const Icon(Icons.image_not_supported, color: Colors.grey),
+        );
+      }
+    } else if (imageUrl.isNotEmpty) {
+      return Image.asset(
+        imageUrl,
+        height: 120,
+        width: double.infinity,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            height: 120,
+            width: double.infinity,
+            color: Colors.grey[800],
+            child: const Icon(Icons.image_not_supported, color: Colors.grey),
+          );
+        },
+      );
+    } else {
+      return Container(
+        height: 120,
+        width: double.infinity,
+        color: Colors.grey[800],
+        child: const Icon(Icons.image_not_supported, color: Colors.grey),
+      );
+    }
   }
 
   Widget _iconText(IconData icon, String text) {

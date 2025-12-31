@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -34,12 +35,7 @@ class PlannedMealCard extends StatelessWidget {
               topLeft: Radius.circular(16),
               bottomLeft: Radius.circular(16),
             ),
-            child: Image.asset(
-              meal.recipe.image,
-              width: 100,
-              height: 100,
-              fit: BoxFit.cover,
-            ),
+            child: _buildRecipeImage(meal.recipe.image),
           ),
           Expanded(
             child: Padding(
@@ -136,6 +132,58 @@ class PlannedMealCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget _buildRecipeImage(String imageUrl) {
+    if (imageUrl.startsWith('data:image')) {
+      final base64String = imageUrl.split(',').last;
+      try {
+        final imageBytes = base64Decode(base64String);
+        return Image.memory(
+          imageBytes,
+          width: 100,
+          height: 100,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              width: 100,
+              height: 100,
+              color: Colors.grey[800],
+              child: const Icon(Icons.image_not_supported, color: Colors.grey),
+            );
+          },
+        );
+      } catch (e) {
+        return Container(
+          width: 100,
+          height: 100,
+          color: Colors.grey[800],
+          child: const Icon(Icons.image_not_supported, color: Colors.grey),
+        );
+      }
+    } else if (imageUrl.isNotEmpty) {
+      return Image.asset(
+        imageUrl,
+        width: 100,
+        height: 100,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            width: 100,
+            height: 100,
+            color: Colors.grey[800],
+            child: const Icon(Icons.image_not_supported, color: Colors.grey),
+          );
+        },
+      );
+    } else {
+      return Container(
+        width: 100,
+        height: 100,
+        color: Colors.grey[800],
+        child: const Icon(Icons.image_not_supported, color: Colors.grey),
+      );
+    }
   }
 }
 

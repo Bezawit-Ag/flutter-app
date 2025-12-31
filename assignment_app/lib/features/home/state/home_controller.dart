@@ -3,6 +3,7 @@ import 'home_state.dart';
 import '../models/recipe_view_model.dart';
 import '../models/filter_settings.dart';
 import '../models/planned_meal.dart';
+import '../../../services/firebase_service.dart';
 
 class HomeController extends ChangeNotifier {
   HomeState state = HomeState(
@@ -11,8 +12,11 @@ class HomeController extends ChangeNotifier {
     filters: FilterSettings(),
   );
 
+  final FirebaseService _firebaseService = FirebaseService();
+
   HomeController() {
     _loadRecipes();
+    loadRecipesFromFirebase();
   }
 
   List<String> get availableTags {
@@ -196,4 +200,19 @@ class HomeController extends ChangeNotifier {
   }
 
   int get plannedMealsCount => state.plannedMeals.length;
+
+  Future<void> loadRecipesFromFirebase() async {
+    try {
+      final firebaseRecipes = await _firebaseService.loadRecipes();
+      final allRecipes = [...state.allRecipes, ...firebaseRecipes];
+      state = state.copyWith(
+        allRecipes: allRecipes,
+        visibleRecipes: allRecipes,
+      );
+      _filterRecipes();
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error loading recipes from Firebase: $e');
+    }
+  }
 }
