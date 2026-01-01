@@ -1,4 +1,4 @@
-cclass RecipeViewModel {
+class RecipeViewModel {
   final String title;
   final String image;
   final String mealType; // Breakfast, Lunch, etc.
