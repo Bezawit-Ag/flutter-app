@@ -40,7 +40,7 @@ Roadmap (Planned Features)
 
 Installation & Setup
  Environment: Ensure Flutter is installed (flutter doctor).
- Clone: git clone https://github.com/username/chefstream.git
+ Clone: git clone https://github.com/Bezawit-Ag/flutter-app.git
  Dependencies: flutter pub get
  Run: flutter run
 
