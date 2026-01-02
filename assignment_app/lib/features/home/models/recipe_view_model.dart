@@ -64,4 +64,42 @@ class RecipeViewModel {
       fat: fat ?? this.fat,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'image': image,
+      'mealType': mealType,
+      'time': time,
+      'calories': calories,
+      'difficulty': difficulty,
+      'tags': tags,
+      'isFavorite': isFavorite,
+      'ingredients': ingredients,
+      'instructions': instructions,
+      'servings': servings,
+      'protein': protein,
+      'carbs': carbs,
+      'fat': fat,
+    };
+  }
+
+  factory RecipeViewModel.fromJson(Map<String, dynamic> json) {
+    return RecipeViewModel(
+      title: json['title'] as String,
+      image: json['image'] as String,
+      mealType: json['mealType'] as String,
+      time: json['time'] as int,
+      calories: json['calories'] as int,
+      difficulty: json['difficulty'] as String,
+      tags: List<String>.from(json['tags'] as List),
+      isFavorite: json['isFavorite'] as bool? ?? false,
+      ingredients: List<String>.from(json['ingredients'] as List? ?? []),
+      instructions: List<String>.from(json['instructions'] as List? ?? []),
+      servings: json['servings'] as int? ?? 2,
+      protein: json['protein'] as int? ?? 0,
+      carbs: json['carbs'] as int? ?? 0,
+      fat: json['fat'] as int? ?? 0,
+    );
+  }
 }

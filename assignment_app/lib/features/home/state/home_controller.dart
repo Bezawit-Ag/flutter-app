@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 import 'home_state.dart';
 import '../models/recipe_view_model.dart';
 import '../models/filter_settings.dart';
@@ -13,10 +15,12 @@ class HomeController extends ChangeNotifier {
   );
 
   final FirebaseService _firebaseService = FirebaseService();
+  static const String _plannedMealsKey = 'planned_meals';
 
   HomeController() {
     _loadRecipes();
     loadRecipesFromFirebase();
+    _loadPlannedMeals();
   }
 
   List<String> get availableTags {
@@ -181,13 +185,42 @@ class HomeController extends ChangeNotifier {
     );
     final updatedMeals = [...state.plannedMeals, plannedMeal];
     state = state.copyWith(plannedMeals: updatedMeals);
+    _savePlannedMeals();
     notifyListeners();
   }
 
   void removeMealFromPlan(String mealId) {
     final updatedMeals = state.plannedMeals.where((m) => m.id != mealId).toList();
     state = state.copyWith(plannedMeals: updatedMeals);
+    _savePlannedMeals();
     notifyListeners();
+  }
+
+  Future<void> _savePlannedMeals() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final mealsJson = state.plannedMeals.map((meal) => meal.toJson()).toList();
+      await prefs.setString(_plannedMealsKey, jsonEncode(mealsJson));
+    } catch (e) {
+      debugPrint('Error saving planned meals: $e');
+    }
+  }
+
+  Future<void> _loadPlannedMeals() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final mealsJsonString = prefs.getString(_plannedMealsKey);
+      if (mealsJsonString != null) {
+        final List<dynamic> mealsJson = jsonDecode(mealsJsonString);
+        final loadedMeals = mealsJson
+            .map((json) => PlannedMeal.fromJson(json as Map<String, dynamic>))
+            .toList();
+        state = state.copyWith(plannedMeals: loadedMeals);
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('Error loading planned meals: $e');
+    }
   }
 
   List<PlannedMeal> get upcomingMeals {

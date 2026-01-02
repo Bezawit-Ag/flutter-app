@@ -26,5 +26,23 @@ class PlannedMeal {
       mealType: mealType ?? this.mealType,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'recipe': recipe.toJson(),
+      'date': date.toIso8601String(),
+      'mealType': mealType,
+    };
+  }
+
+  factory PlannedMeal.fromJson(Map<String, dynamic> json) {
+    return PlannedMeal(
+      id: json['id'] as String,
+      recipe: RecipeViewModel.fromJson(json['recipe'] as Map<String, dynamic>),
+      date: DateTime.parse(json['date'] as String),
+      mealType: json['mealType'] as String,
+    );
+  }
 }
 

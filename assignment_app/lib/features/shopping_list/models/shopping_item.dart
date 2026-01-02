@@ -28,4 +28,24 @@ class ShoppingItem {
       isChecked: isChecked ?? this.isChecked,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'quantity': quantity,
+      'category': category,
+      'isChecked': isChecked,
+    };
+  }
+
+  factory ShoppingItem.fromJson(Map<String, dynamic> json) {
+    return ShoppingItem(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      quantity: json['quantity'] as String? ?? '1',
+      category: json['category'] as String? ?? 'Other',
+      isChecked: json['isChecked'] as bool? ?? false,
+    );
+  }
 }

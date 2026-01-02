@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 import 'shopping_list_state.dart';
 import '../models/shopping_item.dart';
 
 class ShoppingListController extends ChangeNotifier {
   ShoppingListState state = ShoppingListState();
+  static const String _shoppingItemsKey = 'shopping_items';
+
+  ShoppingListController() {
+    _loadShoppingItems();
+  }
 
   // Getters for UI
   int get checkedCount => state.items.where((i) => i.isChecked).length;
@@ -30,12 +37,14 @@ class ShoppingListController extends ChangeNotifier {
     );
     final updatedItems = [...state.items, newItem];
     state = state.copyWith(items: updatedItems);
+    _saveShoppingItems();
     notifyListeners();
   }
 
   void removeItem(String id) {
     final updatedItems = state.items.where((i) => i.id != id).toList();
     state = state.copyWith(items: updatedItems);
+    _saveShoppingItems();
     notifyListeners();
   }
 
@@ -47,12 +56,14 @@ class ShoppingListController extends ChangeNotifier {
       return item;
     }).toList();
     state = state.copyWith(items: updatedItems);
+    _saveShoppingItems();
     notifyListeners();
   }
   
   void clearChecked() {
     final updatedItems = state.items.where((i) => !i.isChecked).toList();
     state = state.copyWith(items: updatedItems);
+    _saveShoppingItems();
     notifyListeners();
   }
 
@@ -66,6 +77,34 @@ class ShoppingListController extends ChangeNotifier {
 
     final updatedItems = [...state.items, ...newItems];
     state = state.copyWith(items: updatedItems);
+    _saveShoppingItems();
     notifyListeners();
+  }
+
+  Future<void> _saveShoppingItems() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final itemsJson = state.items.map((item) => item.toJson()).toList();
+      await prefs.setString(_shoppingItemsKey, jsonEncode(itemsJson));
+    } catch (e) {
+      debugPrint('Error saving shopping items: $e');
+    }
+  }
+
+  Future<void> _loadShoppingItems() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final itemsJsonString = prefs.getString(_shoppingItemsKey);
+      if (itemsJsonString != null) {
+        final List<dynamic> itemsJson = jsonDecode(itemsJsonString);
+        final loadedItems = itemsJson
+            .map((json) => ShoppingItem.fromJson(json as Map<String, dynamic>))
+            .toList();
+        state = state.copyWith(items: loadedItems);
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('Error loading shopping items: $e');
+    }
   }
 }
