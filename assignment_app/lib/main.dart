@@ -8,6 +8,8 @@ import 'features/home/screens/favorites_screen.dart';
 import 'features/home/screens/meal_planner_screen.dart';
 import 'features/home/screens/create_recipe_screen.dart';
 import 'features/home/state/home_controller.dart';
+import 'features/shopping_list/state/shopping_list_controller.dart';
+import 'features/shopping_list/screens/shopping_list_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +30,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => HomeController()),
+        ChangeNotifierProvider(create: (_) => ShoppingListController()),
       ],
       child: RecipeApp(), 
     ),
@@ -74,7 +77,7 @@ class _MainTabScreenState extends State<MainTabScreen> {
     FavoritesScreen(), 
     const CreateRecipeScreen(),
     const MealPlannerScreen(),
-    const Placeholder(child: Text('Shopping List Screen')),
+    const ShoppingListScreen(),
   ];
 
   void _onItemTapped(int index) {

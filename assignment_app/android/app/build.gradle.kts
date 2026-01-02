@@ -8,7 +8,6 @@ android {
     namespace = "com.example.assignment_app"
     compileSdk = flutter.compileSdkVersion
 
-    // ✅ Set correct NDK version
     ndkVersion = "29.0.14206865"
 
     compileOptions {

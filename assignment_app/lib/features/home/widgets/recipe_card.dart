@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/recipe_view_model.dart';
 import '../state/home_controller.dart';
+import '../../shopping_list/state/shopping_list_controller.dart';
+import '../../shopping_list/widgets/ingredient_selection_dialog.dart';
 import '../screens/recipe_detail_screen.dart';
 
 class RecipeCard extends StatelessWidget {
@@ -55,6 +57,38 @@ class RecipeCard extends StatelessWidget {
                         ],
                       ),
                     ),
+                  ),
+                ),
+                // Add to Shopping List icon
+                Positioned(
+                  top: 10,
+                  left: 10,
+                  child: Consumer<ShoppingListController>(
+                    builder: (context, controller, _) {
+                      return GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => IngredientSelectionDialog(
+                              ingredients: recipe.ingredients,
+                            ),
+                          );
+                        },
+                        child: Container(
+                          width: 34,
+                          height: 34,
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.45),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.add_shopping_cart,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
                 // Meal type pill

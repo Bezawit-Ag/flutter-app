@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/recipe_view_model.dart';
 import '../state/home_controller.dart';
+import '../../shopping_list/state/shopping_list_controller.dart';
+import '../../shopping_list/widgets/ingredient_selection_dialog.dart';
 
 class RecipeDetailScreen extends StatefulWidget {
   final RecipeViewModel recipe;
@@ -311,13 +313,47 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                     const SizedBox(height: 32),
                     // Ingredients Section
                     if (currentRecipe.ingredients.isNotEmpty) ...[
-                      const Text(
-                        'Ingredients',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        children: [
+                          const Text(
+                            'Ingredients',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const Spacer(),
+                          Consumer<ShoppingListController>(
+                            builder: (context, shoppingController, _) {
+                              return TextButton.icon(
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => IngredientSelectionDialog(
+                                      ingredients: currentRecipe.ingredients,
+                                    ),
+                                  );
+                                },
+                                icon: const Icon(Icons.add_shopping_cart, color: Colors.orange, size: 20),
+                                label: const Text(
+                                  'Add to List',
+                                  style: TextStyle(
+                                    color: Colors.orange,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                style: TextButton.styleFrom(
+                                  backgroundColor: Colors.orange.withOpacity(0.1),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 16),
                       Container(
